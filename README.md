@@ -114,7 +114,8 @@ python train/training_lightweights_lora.py
 
 ```bash
 conda activate llama_onnx
-python original_torch2onnx.py
+cd ./onnx
+python onnx/original_torch2onnx.py
 ```
 
 ONNX 파일(`decoder_model.onnx`)과 토크나이저/설정 파일이 `save_dir`에 저장됩니다.
@@ -130,6 +131,7 @@ ONNX 파일(`decoder_model.onnx`)과 토크나이저/설정 파일이 `save_dir`
 
 ```bash
 conda activate llama_onnx
+cd ./onnx
 python original_torch2onnx_custom.py
 ```
 
@@ -158,6 +160,7 @@ python original_torch2onnx_custom.py
 
 ```bash
 conda activate llama_onnx
+cd ./onnx
 CUDA_VISIBLE_DEVICES=0 python l_test_kpi.py \
 	--path ./onnx_llama3_2_3b_instruct_custom \
 	--max_samples 100 \
@@ -182,6 +185,7 @@ ONNX 모델의 prefill 단계에서 GPU 메모리 증가량을 반복 측정합�
 
 ```bash
 conda activate llama_onnx
+cd ./onnx
 CUDA_VISIBLE_DEVICES=0 python gpu_test.py \
 	--path ./onnx_llama3_2_3b_instruct_custom \
 	--gpu 0 \
