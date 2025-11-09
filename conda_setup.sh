@@ -4,11 +4,11 @@
 # ==============================
 
 # 1. 새 conda 환경 생성 (Python 3.11)
-conda create -y -n q9task python=3.11
+conda create -y -n llama_onnx python=3.11
 
 # 2. 환경 활성화
 source $(conda info --base)/etc/profile.d/conda.sh
-conda activate q9task
+conda activate llama_onnx
 
 # 3. 필수 패키지 설치
 conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.4 -c pytorch -c nvidia -y

@@ -1,11 +1,11 @@
-# code_final 실행 가이드
+# code 실행 가이드
 
-`code_final/` 디렉터리는 LLaMA 3.2 3B 기반 모델을 압축·미세조정하고 ONNX 런타임으로 배포·평가하기 위한 스크립트를 모아둔 실행 패키지입니다. 이 문서는 환경 준비부터 학습, ONNX 변환, 성능 검증까지의 전체 흐름을 다룹니다.
+`./` 디렉터리는 LLaMA 3.2 3B 기반 모델을 압축·미세조정하고 ONNX 런타임으로 배포·평가하기 위한 스크립트를 모아둔 실행 패키지입니다. 이 문서는 환경 준비부터 학습, ONNX 변환, 성능 검증까지의 전체 흐름을 다룹니다.
 
 ## 디렉터리 한눈에 보기
 
 ```
-code_final/
+./
 ├── conda_setup.sh                # conda 환경 생성 및 핵심 패키지 설치 스크립트
 ├── train/
 │   ├── training_lightweights.py  # SQuAD 기반 선택적 MLP 압축 + 지식증류 학습 파이프라인
@@ -33,19 +33,18 @@ code_final/
 
 ### 1-1. conda 환경 자동 생성
 
-최초 1회, `code_final/` 루트에서 다음 명령을 실행합니다.
+최초 1회, `./` 루트에서 다음 명령을 실행합니다.
 
 ```bash
-cd /data/choinh/workspace/LG_qnn/code_final
 bash conda_setup.sh
 ```
 
-스크립트는 `q9task`라는 이름의 conda 환경을 만들고 PyTorch 2.5.1, CUDA 12.4, transformers 4.47.1, optimum 1.26.1 등 필요한 패키지를 설치합니다. 설치 중 오류가 발생하면 `conda info --envs`로 환경이 생성되었는지 확인한 뒤, 부족한 패키지를 수동으로 설치하세요.
+스크립트는 `llama_onnx`라는 이름의 conda 환경을 만들고 PyTorch 2.5.1, CUDA 12.4, transformers 4.47.1, optimum 1.26.1 등 필요한 패키지를 설치합니다. 설치 중 오류가 발생하면 `conda info --envs`로 환경이 생성되었는지 확인한 뒤, 부족한 패키지를 수동으로 설치하세요.
 
 ### 1-2. 환경 활성화 & Hugging Face 로그인
 
 ```bash
-conda activate q9task
+conda activate llama_onnx
 huggingface-cli login  # 토큰 입력
 ```
 
@@ -74,8 +73,7 @@ huggingface-cli login  # 토큰 입력
 실행 예:
 
 ```bash
-cd /data/choinh/workspace/LG_qnn/code_final
-conda activate q9task
+conda activate llama_onnx
 python train/training_lightweights.py
 ```
 
@@ -98,7 +96,7 @@ LoRA 어댑터만 학습하고 싶은 경우 사용합니다. 스크립트 상�
 실행:
 
 ```bash
-conda activate q9task
+conda activate llama_onnx
 python train/training_lightweights_lora.py
 ```
 
@@ -115,8 +113,7 @@ python train/training_lightweights_lora.py
 2. 명령 실행:
 
 ```bash
-conda activate q9task
-cd /data/choinh/workspace/LG_qnn/code_final/onnx
+conda activate llama_onnx
 python original_torch2onnx.py
 ```
 
@@ -132,8 +129,7 @@ ONNX 파일(`decoder_model.onnx`)과 토크나이저/설정 파일이 `save_dir`
 4. 실행:
 
 ```bash
-conda activate q9task
-cd /data/choinh/workspace/LG_qnn/code_final/onnx
+conda activate llama_onnx
 python original_torch2onnx_custom.py
 ```
 
@@ -161,8 +157,7 @@ python original_torch2onnx_custom.py
 실행 예:
 
 ```bash
-conda activate q9task
-cd /data/choinh/workspace/LG_qnn/code_final/onnx
+conda activate llama_onnx
 CUDA_VISIBLE_DEVICES=0 python l_test_kpi.py \
 	--path ./onnx_llama3_2_3b_instruct_custom \
 	--max_samples 100 \
@@ -186,8 +181,7 @@ ONNX 모델의 prefill 단계에서 GPU 메모리 증가량을 반복 측정합�
 실행 예 (쉘 스크립트 참고):
 
 ```bash
-conda activate q9task
-cd /data/choinh/workspace/LG_qnn/code_final/onnx
+conda activate llama_onnx
 CUDA_VISIBLE_DEVICES=0 python gpu_test.py \
 	--path ./onnx_llama3_2_3b_instruct_custom \
 	--gpu 0 \
